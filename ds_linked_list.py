@@ -16,9 +16,13 @@ class Node:
             return f'Node(value: {self.value}, next: {self.next})'
         
 class LinkedList:
-    def __init__(self, value = None):
-        if value:
-            self.head = Node(value)
+    def __init__(self, values = None):
+        if isinstance(values, list):
+            self.head = Node(values[0])
+            for value in values[1:]:
+                self.append(value)
+        elif values:
+            self.head = Node(values)
         else:
             self.head = None
             
@@ -40,7 +44,19 @@ class LinkedList:
         nodes.append('None')
         return ' -> '.join(nodes)
     
+    def __repr__(self):
+        nodes = []
+        node = self.head
+        while node:
+            nodes.append(str(node.value))
+            node = node.next
+        nodes.append('None')
+        return ' -> '.join(nodes)
+    
     def append(self, value):
+        if not self.head:
+            self.head = Node(value)
+            return
         node = self.head
         while node.next:
             node = node.next
@@ -62,17 +78,25 @@ class LinkedList:
             node = node.next
         return f'node {existing_node} is not in the linked list'
                 
-    def remove(self, node):
-        cur_node = self.head
-        # if node to be removed is self.head
-        if cur_node.value == node:
-            self.head = cur_node.next
-            return
-        while cur_node.next:
-            if cur_node.next.value == node:
-                cur_node.next.next = None
-                cur_node.next = cur_node.next.next
-                return f'node {node} deleted'
-            cur_node = cur_node.next
-        return f'node {node} is not in the linked list'
+    def remove(self, value):
+        remove_count = 0
+        while self.head.value == value and self.head:
+            remove_count += 1
+            self.head = self.head.next
+            if not self.head:
+                return f'node {value} was removed {remove_count} times'
+            
+        prev_node = self.head
+        cur_node = prev_node.next
+        
+        while cur_node:
+            if cur_node.value == value:
+                prev_node.next = cur_node.next
+                cur_node = None
+                remove_count += 1
+            else:
+                prev_node = cur_node
+            cur_node = prev_node.next
+        return f'node {value} was removed {remove_count} times'
+                
         
