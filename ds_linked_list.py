@@ -98,5 +98,14 @@ class LinkedList:
                 prev_node = cur_node
             cur_node = prev_node.next
         return f'node {value} was removed {remove_count} times'
+    
+    def reverse(self):
+        prev = None
+        cur_node = self.head
+        while cur_node.next:
+            cur_node.next, cur_node, prev = prev, cur_node.next, cur_node
+        self.head = cur_node
+        cur_node.next = prev
+        return self
                 
         
